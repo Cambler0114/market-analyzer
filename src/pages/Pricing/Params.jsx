@@ -12,7 +12,7 @@ const Params = () => {
 
   // Загрузка настроек с сервера
   useEffect(() => {
-    fetch("http://localhost:5000/api/settings")
+    fetch("https://market-api-xz12.onrender.com/api/settings")
       .then((res) => res.json())
       .then((data) => {
         setSettings(data);
@@ -32,7 +32,7 @@ const Params = () => {
     e.preventDefault();
 
     // Отправка на сервер
-    fetch("http://localhost:5000/api/settings", {
+    fetch("https://market-api-xz12.onrender.com/api/settings", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(settings),

@@ -28,7 +28,7 @@ const Layout = ({ onLogout }) => {
 
   // Загружаем уведомления при старте
   useEffect(() => {
-    fetch("http://localhost:5000/api/alerts")
+    fetch("https://market-api-xz12.onrender.com/api/alerts")
       .then((res) => res.json())
       .then((data) => setNotifications(data))
       .catch((err) => console.error(err));

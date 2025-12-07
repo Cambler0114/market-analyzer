@@ -59,7 +59,7 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/dashboard")
+    fetch("https://market-api-xz12.onrender.com/api/dashboard")
       .then((res) => res.json())
       .then((resData) => {
         setData(resData);

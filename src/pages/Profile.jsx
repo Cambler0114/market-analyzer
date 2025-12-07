@@ -25,7 +25,7 @@ const Profile = () => {
   const handleChangePassword = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch("http://localhost:5000/api/change-password", {
+      const res = await fetch("https://market-api-xz12.onrender.com/api/change-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(passForm),
@@ -50,7 +50,7 @@ const Profile = () => {
         "Вы уверены? Вам придется войти заново на этом устройстве.",
       )
     ) {
-      fetch("http://localhost:5000/api/logout-all", { method: "POST" }).then(
+      fetch("https://market-api-xz12.onrender.com/api/logout-all", { method: "POST" }).then(
         () => {
           alert("Выполнен выход со всех устройств.");
           localStorage.clear();
