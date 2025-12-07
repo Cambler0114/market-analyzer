@@ -1,0 +1,162 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto:wght@300;400;500;700&display=swap');
+
+:root {
+    --primary-red: #b22222;
+    --bg-sidebar: #e0e0e0; /* Темно-серый для сайдбара */
+    --bg-main: #ffffff; /* Белый для контента */
+    --bg-card: #f4f4f4; /* Светло-серый для карточек */
+    --text-main: #333333;
+}
+
+body {
+    margin: 0;
+    font-family: 'Roboto', sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    overflow-x: hidden;
+}
+
+/* Заголовки с засечками (как на макете "Панель") */
+h1, h2, h3 {
+    font-family: 'Playfair Display', serif;
+    color: var(--text-main);
+    margin-top: 0;
+}
+
+h2 {
+    color: var(--primary-red);
+}
+
+/* Сетка страницы */
+.grid-layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    min-height: 100vh;
+}
+
+/* Сайдбар */
+aside {
+    background-color: var(--bg-sidebar);
+    padding: 40px 30px;
+    border-right: 1px solid #ccc;
+}
+
+/* Навигация */
+.nav-link {
+    display: flex;
+    align-items: center;
+    padding: 12px 0;
+    text-decoration: none;
+    color: #555;
+    font-size: 16px;
+    transition: 0.3s;
+}
+
+.nav-link:hover, .nav-link.active {
+    color: var(--primary-red);
+    font-weight: 500;
+    transform: translateX(5px); /* Легкий сдвиг при наведении */
+}
+
+.nav-category {
+    margin-top: 30px;
+    margin-bottom: 10px;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #777;
+}
+
+/* Карточки (стиль макета) */
+.card {
+    background: var(--bg-card);
+    border-radius: 20px; /* Сильные скругления */
+    padding: 25px;
+    box-shadow: none; /* На макете плоский дизайн */
+    margin-bottom: 20px;
+}
+
+/* Элементы форм */
+input[type="text"], input[type="email"], input[type="password"] {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-sizing: border-box;
+    outline: none;
+}
+
+button {
+    border: none;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: opacity 0.2s;
+}
+
+button:hover {
+    opacity: 0.9;
+}
+
+/* Таблицы */
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 10px;
+}
+
+th {
+    text-align: left;
+    padding: 10px 15px;
+    color: #888;
+    font-weight: 500;
+}
+
+td {
+    padding: 15px;
+    background: #fff;
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+}
+
+td:first-child {
+    border-left: 1px solid #eee;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+
+td:last-child {
+    border-right: 1px solid #eee;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.skeleton {
+    background-color: #e0e0e0;
+    /* Градиент создает эффект блика */
+    background-image: linear-gradient(
+            90deg,
+            #e0e0e0 0px,
+            #f0f0f0 40px,
+            #e0e0e0 80px
+    );
+    background-size: 200% 100%;
+    border-radius: 8px;
+    animation: shimmer 1.5s infinite linear;
+}
+
+/* Анимация движения блика */
+@keyframes shimmer {
+    0% {
+        background-position: -200px 0;
+    }
+    100% {
+        background-position: 200px 0;
+    }
+}
+
+/* Утилита для текста-скелетона */
+.skeleton-text {
+    height: 16px;
+    margin-bottom: 8px;
+    border-radius: 4px;
+}
