@@ -28,7 +28,7 @@ const Layout = ({ onLogout }) => {
 
   // Загружаем уведомления при старте
   useEffect(() => {
-    fetch(""https://hasanov-shamil-babsz.vercel.app"/api/alerts")
+    fetch("https://hasanov-shamil-babsz.vercel.app/api/alerts")
       .then((res) => res.json())
       .then((data) => setNotifications(data))
       .catch((err) => console.error(err));

@@ -12,11 +12,17 @@ const Login = ({ onLogin }) => {
     setError("");
 
     try {
-      const response = await fetch("https://hasanov-shamil-babsz.vercel.app", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
+      // ИСПРАВЛЕННАЯ СТРОКА:
+      // 1. Вставьте СВОЮ ссылку с Render
+      // 2. Обязательно добавьте /api/login в конце
+      const response = await fetch(
+        "https://market-api-xz12.onrender.com/api/login",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        },
+      );
 
       const data = await response.json();
 
