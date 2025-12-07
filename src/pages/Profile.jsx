@@ -25,11 +25,14 @@ const Profile = () => {
   const handleChangePassword = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch("https://market-api-xz12.onrender.com/api/change-password", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(passForm),
-      });
+      const res = await fetch(
+        "https://hasanov-shamil-babsz.vercel.app/api/change-password",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(passForm),
+        },
+      );
       const data = await res.json();
 
       if (data.success) {
@@ -50,13 +53,13 @@ const Profile = () => {
         "Вы уверены? Вам придется войти заново на этом устройстве.",
       )
     ) {
-      fetch("https://market-api-xz12.onrender.com/api/logout-all", { method: "POST" }).then(
-        () => {
-          alert("Выполнен выход со всех устройств.");
-          localStorage.clear();
-          window.location.href = "/login";
-        },
-      );
+      fetch("https://hasanov-shamil-babsz.vercel.app/api/logout-all", {
+        method: "POST",
+      }).then(() => {
+        alert("Выполнен выход со всех устройств.");
+        localStorage.clear();
+        window.location.href = "/login";
+      });
     }
   };
 

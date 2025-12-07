@@ -10,7 +10,7 @@ const Competitors = () => {
   useEffect(() => {
     // Имитируем задержку сети 1.5 секунды, чтобы вы успели увидеть красоту
     setTimeout(() => {
-      fetch("https://market-api-xz12.onrender.com/api/competitors")
+      fetch("https://hasanov-shamil-babsz.vercel.app/api/competitors")
         .then((response) => response.json())
         .then((data) => {
           setCompetitors(data);
@@ -31,7 +31,7 @@ const Competitors = () => {
   };
 
   const addCompetitor = () => {
-    fetch("https://market-api-xz12.onrender.com/api/competitors", {
+    fetch("https://hasanov-shamil-babsz.vercel.app/api/competitors", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name: "Новая Компания" }),

@@ -22,15 +22,18 @@ const Register = () => {
     }
 
     try {
-      const response = await fetch("https://market-api-xz12.onrender.com/api/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          password: formData.password,
-        }),
-      });
+      const response = await fetch(
+        "fetch('https://hasanov-shamil-babsz.vercel.app/api/login'/api/register",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: formData.name,
+            email: formData.email,
+            password: formData.password,
+          }),
+        },
+      );
       const data = await response.json();
 
       if (data.success) {

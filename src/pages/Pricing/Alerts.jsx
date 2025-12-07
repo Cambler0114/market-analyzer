@@ -4,14 +4,16 @@ const Alerts = () => {
   const [alerts, setAlerts] = useState([]);
 
   useEffect(() => {
-    fetch("https://market-api-xz12.onrender.com/api/alerts")
+    fetch("https://hasanov-shamil-babsz.vercel.app/api/alerts")
       .then((res) => res.json())
       .then((data) => setAlerts(data));
   }, []);
 
   const handleAction = (id) => {
     // Отправляем запрос на удаление
-    fetch(`https://market-api-xz12.onrender.com/api/alerts/${id}`, { method: "DELETE" })
+    fetch(`https://hasanov-shamil-babsz.vercel.app/api/alerts/${id}`, {
+      method: "DELETE",
+    })
       .then((res) => res.json())
       .then(() => {
         // Убираем из списка на экране
