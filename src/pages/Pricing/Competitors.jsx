@@ -31,7 +31,7 @@ const Competitors = () => {
   };
 
   const addCompetitor = () => {
-    fetch("https://market-analyzer-r1yg.onrender.com./api/competitors", {
+    fetch("https://market-analyzer-r1yg.onrender.com/api/competitors", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name: "Новая Компания" }),

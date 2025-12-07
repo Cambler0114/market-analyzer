@@ -4,14 +4,14 @@ const Alerts = () => {
   const [alerts, setAlerts] = useState([]);
 
   useEffect(() => {
-    fetch("https://market-analyzer-r1yg.onrender.com./api/alerts")
+    fetch("https://market-analyzer-r1yg.onrender.com/api/alerts")
       .then((res) => res.json())
       .then((data) => setAlerts(data));
   }, []);
 
   const handleAction = (id) => {
     // Отправляем запрос на удаление
-    fetch(`https://hasanov-shamil-babsz.vercel.app/api/alerts/${id}`, {
+    fetch(`https://market-analyzer-r1yg.onrender.com/api/alerts/${id}`, {
       method: "DELETE",
     })
       .then((res) => res.json())

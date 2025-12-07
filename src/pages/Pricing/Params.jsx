@@ -12,7 +12,7 @@ const Params = () => {
 
   // Загрузка настроек с сервера
   useEffect(() => {
-    fetch("https://market-analyzer-r1yg.onrender.com./api/settings")
+    fetch("https://market-analyzer-r1yg.onrender.com/api/settings")
       .then((res) => res.json())
       .then((data) => {
         setSettings(data);
@@ -32,7 +32,7 @@ const Params = () => {
     e.preventDefault();
 
     // Отправка на сервер
-    fetch("https://market-analyzer-r1yg.onrender.com./api/settings", {
+    fetch("https://market-analyzer-r1yg.onrender.com/api/settings", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(settings),

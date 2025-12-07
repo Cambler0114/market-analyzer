@@ -26,7 +26,7 @@ const Profile = () => {
     e.preventDefault();
     try {
       const res = await fetch(
-        "https://market-analyzer-r1yg.onrender.com./api/change-password",
+        "https://market-analyzer-r1yg.onrender.com/api/change-password",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -53,7 +53,7 @@ const Profile = () => {
         "Вы уверены? Вам придется войти заново на этом устройстве.",
       )
     ) {
-      fetch("https://market-analyzer-r1yg.onrender.com./api/logout-all", {
+      fetch("https://market-analyzer-r1yg.onrender.com/api/logout-all", {
         method: "POST",
       }).then(() => {
         alert("Выполнен выход со всех устройств.");
