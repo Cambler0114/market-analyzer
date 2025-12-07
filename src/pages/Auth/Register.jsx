@@ -22,8 +22,9 @@ const Register = () => {
     }
 
     try {
+      // ИСПРАВЛЕННАЯ ССЫЛКА:
       const response = await fetch(
-        "fetch('https://market-analyzer-r1yg.onrender.com./api/login'/api/register",
+        "https://market-analyzer-r1yg.onrender.com/api/register",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

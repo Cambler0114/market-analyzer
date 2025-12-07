@@ -28,10 +28,11 @@ const Layout = ({ onLogout }) => {
 
   // Загружаем уведомления при старте
   useEffect(() => {
-    fetch("https://market-analyzer-r1yg.onrender.com.")
+    // ИСПРАВЛЕННАЯ ССЫЛКА:
+    fetch("https://market-analyzer-r1yg.onrender.com/api/alerts")
       .then((res) => res.json())
       .then((data) => setNotifications(data))
-      .catch((err) => console.error(err));
+      .catch((err) => console.error("Ошибка загрузки уведомлений:", err));
   }, []);
 
   // Закрываем меню, если кликнули мимо
