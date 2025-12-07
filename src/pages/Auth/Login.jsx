@@ -16,7 +16,7 @@ const Login = ({ onLogin }) => {
       // 1. Вставьте СВОЮ ссылку с Render
       // 2. Обязательно добавьте /api/login в конце
       const response = await fetch(
-        "https://market-api-xz12.onrender.com/api/login",
+        "https://market-analyzer-r1yg.onrender.com./api/login",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

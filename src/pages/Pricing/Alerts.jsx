@@ -4,7 +4,7 @@ const Alerts = () => {
   const [alerts, setAlerts] = useState([]);
 
   useEffect(() => {
-    fetch("https://hasanov-shamil-babsz.vercel.app/api/alerts")
+    fetch("https://market-analyzer-r1yg.onrender.com./api/alerts")
       .then((res) => res.json())
       .then((data) => setAlerts(data));
   }, []);

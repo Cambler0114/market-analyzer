@@ -23,7 +23,7 @@ const Register = () => {
 
     try {
       const response = await fetch(
-        "fetch('https://hasanov-shamil-babsz.vercel.app/api/login'/api/register",
+        "fetch('https://market-analyzer-r1yg.onrender.com./api/login'/api/register",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

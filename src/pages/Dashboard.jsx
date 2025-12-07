@@ -59,7 +59,7 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("https://hasanov-shamil-babsz.vercel.app/api/dashboard")
+    fetch("https://market-analyzer-r1yg.onrender.com./api/dashboard")
       .then((res) => res.json())
       .then((resData) => {
         setData(resData);

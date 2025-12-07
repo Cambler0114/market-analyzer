@@ -16,7 +16,7 @@ const Stats = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("https://hasanov-shamil-babsz.vercel.app/api/stats")
+    fetch("https://market-analyzer-r1yg.onrender.com./api/stats")
       .then((res) => res.json())
       .then((data) => {
         setChartData(data);
