@@ -49,7 +49,7 @@ const Layout = ({ onLogout }) => {
   return (
     <div className="grid-layout">
       <aside>
-        <h2>Compare Profit</h2>
+        <h2>Market-analyzer</h2>
 
         <nav>
           <SidebarItem to="/" icon={Home} label="Домой" />

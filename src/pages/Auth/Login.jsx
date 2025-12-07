@@ -12,9 +12,6 @@ const Login = ({ onLogin }) => {
     setError("");
 
     try {
-      // ИСПРАВЛЕННАЯ СТРОКА:
-      // 1. Вставьте СВОЮ ссылку с Render
-      // 2. Обязательно добавьте /api/login в конце
       const response = await fetch(
         "https://market-analyzer-r1yg.onrender.com/api/login",
         {
@@ -27,7 +24,6 @@ const Login = ({ onLogin }) => {
       const data = await response.json();
 
       if (data.success) {
-        // --- ВОТ ТУТ ИЗМЕНЕНИЯ ---
         // 1. Сохраняем данные, пришедшие с сервера, в память браузера
         localStorage.setItem("userName", data.user.name);
         localStorage.setItem("userEmail", data.user.email);

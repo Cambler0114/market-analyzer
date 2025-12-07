@@ -260,7 +260,7 @@ const Dashboard = () => {
               style={{
                 width: 30,
                 height: "40%",
-                background: "#52ec23",
+                background: "#b32424",
                 borderRadius: "6px",
               }}
               title="Пн: 40%"
