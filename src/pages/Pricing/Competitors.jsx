@@ -8,17 +8,18 @@ const Competitors = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Имитируем задержку сети 1.5 секунды, чтобы вы успели увидеть красоту
-    setTimeout(() => {
-      fetch("https://hasanov-shamil-babsz.vercel.app/api/competitors")
-        .then((response) => response.json())
-        .then((data) => {
-          setCompetitors(data);
-          setFilteredCompetitors(data);
-          setLoading(false);
-        })
-        .catch((error) => console.error("Ошибка:", error));
-    }, 1500);
+    // ВАЖНО: Тут должна быть ваша ссылка на Render
+    fetch("https://market-analyzer-r1yg.onrender.com/api/competitors")
+      .then((response) => response.json())
+      .then((data) => {
+        setCompetitors(data);
+        setFilteredCompetitors(data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Ошибка:", error);
+        setLoading(false); // Убираем загрузку даже при ошибке
+      });
   }, []);
 
   const handleSearch = (e) => {
@@ -79,7 +80,6 @@ const Competitors = () => {
             marginTop: 40,
           }}
         >
-          {/* Рисуем 6 фейковых карточек */}
           {[1, 2, 3, 4, 5, 6].map((n) => (
             <div
               key={n}
@@ -91,13 +91,11 @@ const Competitors = () => {
                 height: 100,
               }}
             >
-              {/* Круглый скелетон для аватара */}
               <div
                 className="skeleton"
                 style={{ width: 60, height: 60, borderRadius: "50%" }}
               ></div>
               <div style={{ flex: 1 }}>
-                {/* Полоски текста */}
                 <div
                   className="skeleton skeleton-text"
                   style={{ width: "60%", height: 20, marginBottom: 10 }}
