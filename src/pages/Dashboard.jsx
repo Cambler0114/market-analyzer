@@ -1,405 +1,351 @@
 import React, { useEffect, useState } from "react";
-import { Activity, TrendingUp, Users } from "lucide-react";
-
-// Компонент для верхней карточки метрики
-const MetricCard = ({ title, value, change, isPositive, icon: Icon }) => (
-  <div
-    className="card"
-    style={{
-      flex: 1,
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "space-between",
-    }}
-  >
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "flex-start",
-      }}
-    >
-      <h3
-        style={{
-          fontSize: "14px",
-          color: "#666",
-          marginTop: 0,
-          textTransform: "uppercase",
-          letterSpacing: "0.5px",
-        }}
-      >
-        {title}
-      </h3>
-      {Icon && <Icon size={20} color="#b22222" />}
-    </div>
-
-    <div>
-      <h1 style={{ fontSize: "36px", margin: "10px 0", color: "#333" }}>
-        {value}
-      </h1>
-      <span
-        style={{
-          color: isPositive ? "#155724" : "#721c24",
-          background: isPositive ? "#d4edda" : "#f8d7da",
-          padding: "5px 12px",
-          borderRadius: "15px",
-          fontSize: "13px",
-          fontWeight: "bold",
-          display: "inline-block",
-        }}
-      >
-        {change}
-      </span>
-    </div>
-  </div>
-);
+import {
+  Area,
+  AreaChart,
+  CartesianGrid,
+  PolarAngleAxis,
+  PolarGrid,
+  PolarRadiusAxis,
+  Radar,
+  RadarChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
+import {
+  Activity,
+  ArrowDown,
+  ArrowUp,
+  ShoppingCart,
+  Users,
+  Zap,
+} from "lucide-react";
 
 const Dashboard = () => {
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [timeRange, setTimeRange] = useState("month");
+  const [chartData, setChartData] = useState([]);
 
-  useEffect(() => {
-    fetch("https://market-analyzer-r1yg.onrender.com/api/dashboard")
-      .then((res) => res.json())
-      .then((resData) => {
-        setData(resData);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Ошибка загрузки дашборда:", err);
-        setLoading(false);
+  // 1. Имитация данных для разных периодов
+  // В реальном проекте это был бы запрос к API с параметром ?period=week
+  const generateData = (range) => {
+    const data = [];
+    const count = range === "week" ? 7 : range === "month" ? 30 : 12;
+    const labelPrefix =
+      range === "week" ? "День" : range === "month" ? "Дек" : "Мес";
+
+    for (let i = 1; i <= count; i++) {
+      data.push({
+        name: `${labelPrefix} ${i}`,
+        income: Math.floor(Math.random() * 50000) + 20000, // Случайная выручка
+        competitors: Math.floor(Math.random() * 40000) + 15000,
       });
-  }, []);
+    }
+    return data;
+  };
 
-  if (loading)
-    return (
-      <div>
-        <div
-          className="skeleton"
-          style={{ width: 300, height: 40, marginBottom: 30 }}
-        ></div>
+  // Данные для Радарной диаграммы (Паутинки)
+  const radarData = [
+    { subject: "Цена", A: 120, B: 110, fullMark: 150 },
+    { subject: "Ассортимент", A: 98, B: 130, fullMark: 150 },
+    { subject: "Качество", A: 86, B: 130, fullMark: 150 },
+    { subject: "Доставка", A: 99, B: 100, fullMark: 150 },
+    { subject: "Лояльность", A: 85, B: 90, fullMark: 150 },
+    { subject: "Маркетинг", A: 65, B: 85, fullMark: 150 },
+  ];
 
-        {/* Верхние карточки */}
-        <div style={{ display: "flex", gap: "20px", marginBottom: "30px" }}>
-          <div className="skeleton card" style={{ height: 120, flex: 1 }}></div>
-          <div className="skeleton card" style={{ height: 120, flex: 1 }}></div>
-          <div className="skeleton card" style={{ height: 120, flex: 1 }}></div>
-        </div>
-
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "2fr 1fr",
-            gap: "20px",
-          }}
-        >
-          {/* Таблица слева */}
-          <div className="card">
-            <div
-              className="skeleton"
-              style={{ width: "40%", height: 30, marginBottom: 20 }}
-            ></div>
-            <div
-              className="skeleton"
-              style={{ width: "100%", height: 40, marginBottom: 10 }}
-            ></div>
-            <div
-              className="skeleton"
-              style={{ width: "100%", height: 40, marginBottom: 10 }}
-            ></div>
-            <div
-              className="skeleton"
-              style={{ width: "100%", height: 40, marginBottom: 10 }}
-            ></div>
-          </div>
-
-          {/* График справа */}
-          <div
-            className="card"
-            style={{
-              display: "flex",
-              alignItems: "flex-end",
-              justifyContent: "center",
-              gap: 10,
-              paddingBottom: 40,
-            }}
-          >
-            <div className="skeleton" style={{ width: 30, height: 60 }}></div>
-            <div className="skeleton" style={{ width: 30, height: 100 }}></div>
-            <div className="skeleton" style={{ width: 30, height: 80 }}></div>
-            <div className="skeleton" style={{ width: 30, height: 120 }}></div>
-          </div>
-        </div>
-      </div>
-    );
+  // Обновляем график при смене фильтра
+  useEffect(() => {
+    setChartData(generateData(timeRange));
+  }, [timeRange]);
 
   return (
-    <div>
-      <h1 style={{ marginBottom: 30 }}>Панель управления</h1>
-
-      {/* 1. ВЕРХНИЕ КАРТОЧКИ (МЕТРИКИ) */}
+    <div className="fade-in">
       <div
         style={{
           display: "flex",
-          gap: "20px",
-          marginBottom: "30px",
-          flexWrap: "wrap",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: 30,
         }}
       >
-        <MetricCard
-          title="Ценовые тенденции"
-          value={data.trends.value}
-          change={data.trends.change}
-          isPositive={data.trends.positive}
-          icon={TrendingUp}
-        />
-        <MetricCard
-          title="Активность конкурентов"
-          value={data.competitorsActivity.value}
-          change={data.competitorsActivity.change}
-          isPositive={data.competitorsActivity.positive}
-          icon={Users}
-        />
-        <MetricCard
-          title="Изменения"
-          value={data.priceChanges.value}
-          change={data.priceChanges.change}
-          isPositive={data.priceChanges.positive}
-          icon={Activity}
-        />
-      </div>
-
-      <div
-        style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "20px" }}
-      >
-        {/* 2. ТАБЛИЦА АКТИВНОСТИ (ЛЕВАЯ ЧАСТЬ) */}
-        <div className="card">
-          <h3
-            style={{
-              borderBottom: "1px solid #eee",
-              paddingBottom: "15px",
-              marginBottom: "15px",
-            }}
-          >
-            Ценовая деятельность{" "}
-            <small style={{ color: "#999", fontWeight: "normal" }}>
-              (прошлый месяц)
-            </small>
-          </h3>
-
-          <table style={{ marginTop: "0" }}>
-            <thead>
-              <tr>
-                <th style={{ paddingLeft: 0 }}>Дата</th>
-                <th>Конкурент</th>
-                <th>Изменения</th>
-                <th>Оповещения</th>
-              </tr>
-            </thead>
-            <tbody>
-              {/* Проверяем, есть ли массив activity в данных */}
-              {data.activity && data.activity.length > 0 ? (
-                data.activity.map((row) => (
-                  <tr key={row.id}>
-                    <td style={{ paddingLeft: 0, color: "#555" }}>
-                      {row.date}
-                    </td>
-                    <td>
-                      <span
-                        style={{
-                          background: row.color || "#999",
-                          color: "white",
-                          padding: "5px 10px",
-                          borderRadius: "6px",
-                          fontSize: "12px",
-                          fontWeight: "bold",
-                          boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
-                        }}
-                      >
-                        {row.competitor}
-                      </span>
-                    </td>
-                    <td style={{ fontWeight: 500 }}>{row.changes}</td>
-                    <td style={{ color: "#666" }}>{row.alerts}</td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="4" style={{ textAlign: "center", padding: 20 }}>
-                    Данных нет
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+        <div>
+          <h1 style={{ margin: 0 }}>📊 Панель управления</h1>
+          <p style={{ color: "#666", margin: 0 }}>
+            Обзор ключевых показателей рынка
+          </p>
         </div>
 
-        {/* 3. ГРАФИК "ВЗГЛЯД КОНКУРЕНТОВ" (ПРАВАЯ ЧАСТЬ) */}
+        {/* Фильтр времени */}
+        <div
+          style={{
+            background: "#fff",
+            padding: 5,
+            borderRadius: 10,
+            display: "flex",
+            gap: 5,
+            boxShadow: "0 2px 5px rgba(0,0,0,0.05)",
+          }}
+        >
+          {["week", "month", "year"].map((period) => (
+            <button
+              key={period}
+              onClick={() => setTimeRange(period)}
+              style={{
+                border: "none",
+                background: timeRange === period ? "#b22222" : "transparent",
+                color: timeRange === period ? "white" : "#666",
+                padding: "8px 15px",
+                borderRadius: 8,
+                cursor: "pointer",
+                transition: "0.3s",
+                textTransform: "capitalize",
+              }}
+            >
+              {period === "week"
+                ? "Неделя"
+                : period === "month"
+                  ? "Месяц"
+                  : "Год"}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* 1. КАРТОЧКИ СТАТИСТИКИ */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+          gap: 20,
+          marginBottom: 30,
+        }}
+      >
+        {/* Карточка 1 */}
+        <div
+          className="card"
+          style={{ display: "flex", alignItems: "center", gap: 20 }}
+        >
+          <div
+            style={{
+              padding: 15,
+              background: "#e6ffe6",
+              borderRadius: "50%",
+              color: "green",
+            }}
+          >
+            <ArrowUp size={24} />
+          </div>
+          <div>
+            <div style={{ color: "#999", fontSize: 12 }}>Общая выручка</div>
+            <div style={{ fontSize: 24, fontWeight: "bold" }}>₽ 1,2 млн</div>
+            <div style={{ color: "green", fontSize: 12, fontWeight: "bold" }}>
+              +12.5% к прошлому
+            </div>
+          </div>
+        </div>
+
+        {/* Карточка 2 */}
+        <div
+          className="card"
+          style={{ display: "flex", alignItems: "center", gap: 20 }}
+        >
+          <div
+            style={{
+              padding: 15,
+              background: "#ffe6e6",
+              borderRadius: "50%",
+              color: "#b22222",
+            }}
+          >
+            <ArrowDown size={24} />
+          </div>
+          <div>
+            <div style={{ color: "#999", fontSize: 12 }}>
+              Активность конкурентов
+            </div>
+            <div style={{ fontSize: 24, fontWeight: "bold" }}>Высокая</div>
+            <div style={{ color: "#b22222", fontSize: 12, fontWeight: "bold" }}>
+              Демпинг цен замечен
+            </div>
+          </div>
+        </div>
+
+        {/* Карточка 3 */}
+        <div
+          className="card"
+          style={{ display: "flex", alignItems: "center", gap: 20 }}
+        >
+          <div
+            style={{
+              padding: 15,
+              background: "#e6f7ff",
+              borderRadius: "50%",
+              color: "#0088fe",
+            }}
+          >
+            <ShoppingCart size={24} />
+          </div>
+          <div>
+            <div style={{ color: "#999", fontSize: 12 }}>
+              Мониторинг товаров
+            </div>
+            <div style={{ fontSize: 24, fontWeight: "bold" }}>452 шт.</div>
+            <div style={{ color: "#0088fe", fontSize: 12, fontWeight: "bold" }}>
+              Все данные актуальны
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* 2. ГЛАВНЫЕ ГРАФИКИ */}
+      <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: 20 }}>
+        {/* Левая часть: График выручки */}
+        <div className="card" style={{ height: 400 }}>
+          <h3>Динамика цен (Вы vs Рынок)</h3>
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart data={chartData}>
+              <defs>
+                <linearGradient id="colorIncome" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#b22222" stopOpacity={0.8} />
+                  <stop offset="95%" stopColor="#b22222" stopOpacity={0} />
+                </linearGradient>
+                <linearGradient id="colorComp" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#82ca9d" stopOpacity={0.8} />
+                  <stop offset="95%" stopColor="#82ca9d" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <XAxis dataKey="name" />
+              <YAxis />
+              <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
+              <Tooltip />
+              <Area
+                type="monotone"
+                dataKey="income"
+                stroke="#b22222"
+                fillOpacity={1}
+                fill="url(#colorIncome)"
+                name="Ваша цена"
+              />
+              <Area
+                type="monotone"
+                dataKey="competitors"
+                stroke="#82ca9d"
+                fillOpacity={1}
+                fill="url(#colorComp)"
+                name="Рынок"
+              />
+            </AreaChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* Правая часть: Сравнение (Радар) */}
         <div
           className="card"
           style={{
+            height: 400,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            justifyContent: "center",
-            minHeight: "300px",
           }}
         >
-          <h3 style={{ marginBottom: 30 }}>Взгляд конкурентов</h3>
-
-          {/* CSS-график (имитация макета) */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "flex-end",
-              gap: "15px",
-              height: "150px",
-            }}
-          >
-            <div
-              style={{
-                width: 30,
-                height: "40%",
-                background: "#b32424",
-                borderRadius: "6px",
-              }}
-              title="Пн: 40%"
-            ></div>
-            <div
-              style={{
-                width: 30,
-                height: "80%",
-                background: "#b22222",
-                borderRadius: "6px",
-              }}
-              title="Вт: 80%"
-            ></div>
-            <div
-              style={{
-                width: 30,
-                height: "60%",
-                background: "#b22222",
-                borderRadius: "6px",
-              }}
-              title="Ср: 60%"
-            ></div>
-            <div
-              style={{
-                width: 30,
-                height: "100%",
-                background: "#b22222",
-                borderRadius: "6px",
-              }}
-              title="Чт: 100%"
-            ></div>
-            <div
-              style={{
-                width: 30,
-                height: "90%",
-                background: "#b22222",
-                borderRadius: "6px",
-              }}
-              title="Пт: 90%"
-            ></div>
+          <h3>Бенчмаркинг</h3>
+          <div style={{ fontSize: 12, color: "#999", marginBottom: 10 }}>
+            Сравнение с лидером рынка
           </div>
-
-          <div
-            style={{
-              display: "flex",
-              gap: "25px",
-              fontSize: "14px",
-              marginTop: 15,
-              color: "#888",
-              fontWeight: "bold",
-            }}
-          >
-            <span>Пн</span>
-            <span>Вт</span>
-            <span>Ср</span>
-            <span>Чт</span>
-            <span>Пт</span>
-          </div>
+          <ResponsiveContainer width="100%" height="100%">
+            <RadarChart cx="50%" cy="50%" outerRadius="80%" data={radarData}>
+              <PolarGrid />
+              <PolarAngleAxis
+                dataKey="subject"
+                tick={{ fill: "#666", fontSize: 12 }}
+              />
+              <PolarRadiusAxis angle={30} domain={[0, 150]} />
+              <Radar
+                name="Мы"
+                dataKey="A"
+                stroke="#b22222"
+                fill="#b22222"
+                fillOpacity={0.6}
+              />
+              <Radar
+                name="Конкурент"
+                dataKey="B"
+                stroke="#8884d8"
+                fill="#8884d8"
+                fillOpacity={0.3}
+              />
+              <Tooltip />
+            </RadarChart>
+          </ResponsiveContainer>
         </div>
       </div>
 
-      {/* 4. НИЖНЯЯ СЕКЦИЯ (ПРИМЕР ТОВАРОВ) - как на макете */}
-      <h3 style={{ marginTop: 30 }}>Ценообразование конкурентов</h3>
-      <div className="card" style={{ padding: 0, overflow: "hidden" }}>
-        <table>
-          <thead style={{ background: "#f9f9f9" }}>
-            <tr>
-              <th style={{ paddingLeft: 20 }}>Продукт</th>
-              <th>Статус</th>
-              <th>Цена</th>
-              <th>Рейтинг</th>
-              <th>Уведомление</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td style={{ paddingLeft: 20 }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 15 }}>
-                  <div
-                    style={{
-                      width: 40,
-                      height: 40,
-                      background: "#eee",
-                      borderRadius: 5,
-                    }}
-                  ></div>
-                  <b>Игровой PC Case</b>
+      {/* 3. ПОСЛЕДНЯЯ АКТИВНОСТЬ (ЛЕНТА) */}
+      <div className="card" style={{ marginTop: 20 }}>
+        <h3>🔔 Лента событий</h3>
+        <div style={{ display: "flex", flexDirection: "column", gap: 15 }}>
+          {[
+            {
+              icon: Zap,
+              color: "orange",
+              text: 'Конкурент "Альфа" снизил цену на iPhone 15',
+              time: "10 мин назад",
+            },
+            {
+              icon: Users,
+              color: "blue",
+              text: 'Новый игрок "Gamma" появился в категории Электроника',
+              time: "2 часа назад",
+            },
+            {
+              icon: Activity,
+              color: "green",
+              text: "Ваша рентабельность выросла на 2% благодаря репрайсингу",
+              time: "Вчера",
+            },
+          ].map((item, index) => (
+            <div
+              key={index}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 15,
+                paddingBottom: 10,
+                borderBottom: "1px solid #eee",
+              }}
+            >
+              <div
+                style={{
+                  padding: 10,
+                  background: "#f9f9f9",
+                  borderRadius: 10,
+                  color: item.color,
+                }}
+              >
+                <item.icon size={18} />
+              </div>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: 14, fontWeight: "500" }}>
+                  {item.text}
                 </div>
-              </td>
-              <td>
-                <span
-                  style={{
-                    color: "green",
-                    background: "#e6ffe6",
-                    padding: "4px 8px",
-                    borderRadius: 4,
-                    fontSize: 12,
-                  }}
-                >
-                  Активен
-                </span>
-              </td>
-              <td>200 000 ₽</td>
-              <td>⭐️ 4.5</td>
-              <td>210 (↓ -10%)</td>
-            </tr>
-            <tr>
-              <td style={{ paddingLeft: 20 }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 15 }}>
-                  <div
-                    style={{
-                      width: 40,
-                      height: 40,
-                      background: "#eee",
-                      borderRadius: 5,
-                    }}
-                  ></div>
-                  <b>Sedan Model S</b>
-                </div>
-              </td>
-              <td>
-                <span
-                  style={{
-                    color: "gray",
-                    background: "#eee",
-                    padding: "4px 8px",
-                    borderRadius: 4,
-                    fontSize: 12,
-                  }}
-                >
-                  Неактивен
-                </span>
-              </td>
-              <td>100 000 ₽</td>
-              <td>⭐️ 4.1</td>
-              <td>120 (↓ -20%)</td>
-            </tr>
-          </tbody>
-        </table>
+                <div style={{ fontSize: 11, color: "#999" }}>{item.time}</div>
+              </div>
+              <button
+                style={{
+                  border: "1px solid #ddd",
+                  background: "transparent",
+                  borderRadius: 5,
+                  padding: "5px 10px",
+                  fontSize: 12,
+                  cursor: "pointer",
+                }}
+              >
+                Детали
+              </button>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
