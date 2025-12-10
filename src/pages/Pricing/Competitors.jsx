@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Plus, Search, X } from "lucide-react"; // Добавили иконки
+import { Plus, Search, Trash2, X } from "lucide-react"; // Импортировали Trash2
 
 const Competitors = () => {
   const [competitors, setCompetitors] = useState([]);
@@ -7,7 +7,6 @@ const Competitors = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
 
-  // Состояние для Модального окна
   const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
@@ -15,7 +14,7 @@ const Competitors = () => {
     share: "1%",
   });
 
-  // Загрузка данных
+  // Загрузка
   useEffect(() => {
     fetch("https://market-analyzer-r1yg.onrender.com/api/competitors")
       .then((response) => response.json())
@@ -30,7 +29,6 @@ const Competitors = () => {
       });
   }, []);
 
-  // Живой поиск
   const handleSearch = (e) => {
     const term = e.target.value.toLowerCase();
     setSearchTerm(term);
@@ -40,12 +38,11 @@ const Competitors = () => {
     setFilteredCompetitors(filtered);
   };
 
-  // Обработка ввода в форме
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // ОТПРАВКА ДАННЫХ НА СЕРВЕР
+  // ДОБАВЛЕНИЕ
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -58,13 +55,9 @@ const Competitors = () => {
         },
       );
       const newComp = await response.json();
-
-      // Обновляем список на экране без перезагрузки
       const updatedList = [...competitors, newComp];
       setCompetitors(updatedList);
       setFilteredCompetitors(updatedList);
-
-      // Закрываем окно и чистим форму
       setShowModal(false);
       setFormData({ name: "", threat: "Средний", share: "1%" });
     } catch (err) {
@@ -72,9 +65,37 @@ const Competitors = () => {
     }
   };
 
+  // --- НОВАЯ ФУНКЦИЯ: УДАЛЕНИЕ ---
+  const handleDelete = async (id, name, e) => {
+    e.stopPropagation(); // Чтобы клик не срабатывал на саму карточку (если будет кликабельной)
+
+    // Спрашиваем подтверждение
+    if (!window.confirm(`Вы точно хотите удалить конкурента "${name}"?`))
+      return;
+
+    try {
+      // Отправляем запрос на сервер
+      await fetch(
+        `https://market-analyzer-r1yg.onrender.com/api/competitors/${id}`,
+        {
+          method: "DELETE",
+        },
+      );
+
+      // Удаляем из списка на экране
+      const updatedList = competitors.filter((c) => c._id !== id);
+      setCompetitors(updatedList);
+
+      // Обновляем и отфильтрованный список тоже
+      const updatedFiltered = filteredCompetitors.filter((c) => c._id !== id);
+      setFilteredCompetitors(updatedFiltered);
+    } catch (err) {
+      alert("Не удалось удалить. Возможно, проблема с сервером.");
+    }
+  };
+
   return (
     <div style={{ position: "relative" }}>
-      {/* Шапка */}
       <div
         style={{
           display: "flex",
@@ -99,7 +120,6 @@ const Competitors = () => {
       </div>
 
       {loading ? (
-        // Скелетоны загрузки
         <div
           style={{
             display: "grid",
@@ -117,7 +137,6 @@ const Competitors = () => {
           ))}
         </div>
       ) : (
-        // Список карточек
         <div
           style={{
             display: "grid",
@@ -129,8 +148,35 @@ const Competitors = () => {
             <div
               key={comp._id || comp.id}
               className="card"
-              style={{ display: "flex", alignItems: "center", gap: "20px" }}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "20px",
+                position: "relative",
+              }}
             >
+              {/* Кнопка удаления */}
+              <button
+                onClick={(e) => handleDelete(comp._id, comp.name, e)}
+                style={{
+                  position: "absolute",
+                  top: 10,
+                  right: 10,
+                  background: "transparent",
+                  border: "none",
+                  cursor: "pointer",
+                  color: "#999",
+                  padding: 5,
+                }}
+                title="Удалить"
+              >
+                <Trash2
+                  size={16}
+                  onMouseOver={(e) => (e.target.style.color = "red")}
+                  onMouseOut={(e) => (e.target.style.color = "#999")}
+                />
+              </button>
+
               <div
                 style={{
                   width: 50,
@@ -148,7 +194,9 @@ const Competitors = () => {
                 {comp.letter}
               </div>
               <div>
-                <h3 style={{ margin: "0 0 5px 0" }}>{comp.name}</h3>
+                <h3 style={{ margin: "0 0 5px 0", paddingRight: 20 }}>
+                  {comp.name}
+                </h3>
                 <p style={{ margin: "5px 0", fontSize: 14 }}>
                   Уровень угрозы:{" "}
                   <b style={{ color: comp.color }}>{comp.threat}</b>
@@ -160,7 +208,6 @@ const Competitors = () => {
             </div>
           ))}
 
-          {/* КНОПКА ДОБАВИТЬ */}
           <div
             onClick={() => setShowModal(true)}
             className="card"
@@ -186,7 +233,6 @@ const Competitors = () => {
         </div>
       )}
 
-      {/* --- МОДАЛЬНОЕ ОКНО --- */}
       {showModal && (
         <div
           style={{
@@ -238,7 +284,6 @@ const Competitors = () => {
                   required
                 />
               </div>
-
               <div>
                 <label style={{ fontSize: 12, fontWeight: "bold" }}>
                   Уровень угрозы
@@ -259,10 +304,9 @@ const Competitors = () => {
                   <option value="Низкий">🟢 Низкий</option>
                 </select>
               </div>
-
               <div>
                 <label style={{ fontSize: 12, fontWeight: "bold" }}>
-                  Доля рынка (примерно)
+                  Доля рынка
                 </label>
                 <input
                   type="text"
@@ -273,7 +317,6 @@ const Competitors = () => {
                   required
                 />
               </div>
-
               <button
                 type="submit"
                 style={{

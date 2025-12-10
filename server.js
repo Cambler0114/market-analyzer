@@ -167,6 +167,18 @@ aapp.post("/api/competitors", async (req, res) => {
     letter,
   });
 
+  // УДАЛЕНИЕ КОНКУРЕНТА
+  app.delete("/api/competitors/:id", async (req, res) => {
+    try {
+      const id = req.params.id;
+      // Удаляем из MongoDB по ID
+      await Competitor.findByIdAndDelete(id);
+      res.json({ success: true, message: "Конкурент удален" });
+    } catch (error) {
+      res.status(500).json({ success: false, message: "Ошибка сервера" });
+    }
+  });
+
   res.json(newComp);
 });
 
