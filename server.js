@@ -147,7 +147,7 @@ app.get("/api/competitors", async (req, res) => {
   res.json(comps);
 });
 
-aapp.post("/api/competitors", async (req, res) => {
+app.post("/api/competitors", async (req, res) => {
   const { name, threat, share } = req.body;
 
   // 1. Определяем цвет автоматически
