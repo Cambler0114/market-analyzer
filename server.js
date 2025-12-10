@@ -9,9 +9,8 @@ app.use(cors());
 app.use(express.json());
 
 // --- ПОДКЛЮЧЕНИЕ К MONGODB ---
-// Вставьте сюда вашу ссылку. Пароль в ссылке не должен содержать скобки <>
 const MONGO_URI =
-  "mongodb+srv://shamil:<db_password>@cluster0.9rba8zl.mongodb.net/?appName=Cluster0";
+  "mongodb+srv://shamil:Ifvbkm@cluster0.9rba8zl.mongodb.net/?appName=Cluster0";
 
 mongoose
   .connect(MONGO_URI)
