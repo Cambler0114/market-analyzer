@@ -59,7 +59,7 @@ const Register = () => {
       }}
     >
       <div className="card" style={{ width: "350px", textAlign: "center" }}>
-        <h2 style={{ color: "#b22222" }}>Compare Profit</h2>
+        <h2 style={{ color: "#b22222" }}>Market-analyzer</h2>
         <h3>Регистрация</h3>
         {error && <div style={{ color: "red", marginBottom: 10 }}>{error}</div>}
 
