@@ -147,12 +147,26 @@ app.get("/api/competitors", async (req, res) => {
   res.json(comps);
 });
 
-app.post("/api/competitors", async (req, res) => {
+aapp.post("/api/competitors", async (req, res) => {
+  const { name, threat, share } = req.body;
+
+  // 1. Определяем цвет автоматически
+  let color = "green";
+  if (threat === "Высокий") color = "red";
+  if (threat === "Средний") color = "orange";
+
+  // 2. Берем первую букву для аватарки
+  const letter = name ? name.charAt(0).toUpperCase() : "?";
+
+  // 3. Сохраняем в БД
   const newComp = await Competitor.create({
-    ...req.body,
-    color: "gray",
-    letter: "?",
+    name,
+    threat,
+    share,
+    color,
+    letter,
   });
+
   res.json(newComp);
 });
 
