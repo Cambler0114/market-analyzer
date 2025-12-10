@@ -17,7 +17,7 @@ mongoose
   .then(() => console.log("✅ База данных MongoDB подключена"))
   .catch((err) => console.error("❌ Ошибка подключения к БД:", err));
 
-// --- СХЕМЫ ДАННЫХ (Как выглядят данные в БД) ---
+// --- СХЕМЫ ДАННЫХ ---
 
 // Схема пользователя
 const UserSchema = new mongoose.Schema({
@@ -37,8 +37,7 @@ const CompetitorSchema = new mongoose.Schema({
 });
 const Competitor = mongoose.model("Competitor", CompetitorSchema);
 
-// --- ПЕРВОНАЧАЛЬНЫЕ ДАННЫЕ (ЧТОБЫ БАЗА НЕ БЫЛА ПУСТОЙ) ---
-// Этот код проверит, есть ли админ, и если нет — создаст его
+// --- ПЕРВОНАЧАЛЬНЫЕ ДАННЫЕ ---
 const initDB = async () => {
   const adminExists = await User.findOne({ email: "admin@mail.ru" });
   if (!adminExists) {
@@ -78,10 +77,9 @@ const initDB = async () => {
     console.log("Конкуренты добавлены");
   }
 };
-// Запускаем проверку при старте
 initDB();
 
-// --- СТАТИЧНЫЕ ДАННЫЕ (Их можно пока не хранить в БД для простоты) ---
+// --- СТАТИЧНЫЕ ДАННЫЕ ---
 const stats = [
   { label: "Янв", value: 100, display: "10 млн" },
   { label: "Фев", value: 150, display: "15 млн" },
@@ -141,24 +139,22 @@ let alerts = [
 
 // --- API МАРШРУТЫ ---
 
-// 1. КОНКУРЕНТЫ (ТЕПЕРЬ ИЗ БД)
+// 1. ПОЛУЧИТЬ ВСЕХ КОНКУРЕНТОВ
 app.get("/api/competitors", async (req, res) => {
   const comps = await Competitor.find();
   res.json(comps);
 });
 
+// 2. ДОБАВИТЬ КОНКУРЕНТА
 app.post("/api/competitors", async (req, res) => {
   const { name, threat, share } = req.body;
 
-  // 1. Определяем цвет автоматически
   let color = "green";
   if (threat === "Высокий") color = "red";
   if (threat === "Средний") color = "orange";
 
-  // 2. Берем первую букву для аватарки
   const letter = name ? name.charAt(0).toUpperCase() : "?";
 
-  // 3. Сохраняем в БД
   const newComp = await Competitor.create({
     name,
     threat,
@@ -167,25 +163,24 @@ app.post("/api/competitors", async (req, res) => {
     letter,
   });
 
-  // УДАЛЕНИЕ КОНКУРЕНТА
-  app.delete("/api/competitors/:id", async (req, res) => {
-    try {
-      const id = req.params.id;
-      // Удаляем из MongoDB по ID
-      await Competitor.findByIdAndDelete(id);
-      res.json({ success: true, message: "Конкурент удален" });
-    } catch (error) {
-      res.status(500).json({ success: false, message: "Ошибка сервера" });
-    }
-  });
-
   res.json(newComp);
 });
+// !!! ЗДЕСЬ БЫЛА ОШИБКА: app.delete БЫЛ ВНУТРИ app.post. Я ВЫНЕС ЕГО НИЖЕ !!!
 
-// 2. АВТОРИЗАЦИЯ (ИЗ БД)
+// 3. УДАЛИТЬ КОНКУРЕНТА
+app.delete("/api/competitors/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    await Competitor.findByIdAndDelete(id);
+    res.json({ success: true, message: "Конкурент удален" });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Ошибка сервера" });
+  }
+});
+
+// 4. АВТОРИЗАЦИЯ
 app.post("/api/login", async (req, res) => {
   const { email, password } = req.body;
-  // Ищем в настоящей базе данных
   const user = await User.findOne({ email, password });
 
   if (user) {
@@ -197,39 +192,34 @@ app.post("/api/login", async (req, res) => {
   }
 });
 
-// 3. РЕГИСТРАЦИЯ (В БД)
+// 5. РЕГИСТРАЦИЯ
 app.post("/api/register", async (req, res) => {
   const { name, email, password } = req.body;
-
-  // Проверяем, есть ли такой email в БД
   const existingUser = await User.findOne({ email });
   if (existingUser) {
     return res
       .status(400)
       .json({ success: false, message: "Пользователь уже существует" });
   }
-
-  // Создаем и сохраняем навсегда
   await User.create({ name, email, password });
-  console.log("Новый пользователь сохранен в MongoDB:", email);
+  console.log("Новый пользователь сохранен:", email);
   res.json({ success: true, message: "Регистрация успешна!" });
 });
 
-// 4. СМЕНА ПАРОЛЯ (В БД)
+// 6. СМЕНА ПАРОЛЯ
 app.post("/api/change-password", async (req, res) => {
   const { email, oldPassword, newPassword } = req.body;
-
   const user = await User.findOne({ email, password: oldPassword });
   if (user) {
     user.password = newPassword;
-    await user.save(); // Сохраняем изменения
+    await user.save();
     res.json({ success: true, message: "Пароль успешно изменен!" });
   } else {
     res.status(400).json({ success: false, message: "Старый пароль неверен" });
   }
 });
 
-// Остальные маршруты (пока статические)
+// Остальные маршруты
 app.get("/api/alerts", (req, res) => res.json(alerts));
 app.get("/api/settings", (req, res) => res.json(userSettings));
 app.post("/api/settings", (req, res) => {
